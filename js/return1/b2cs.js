@@ -34,6 +34,14 @@ const STATES = {
       id: "26",
       name: "Dadra & Nagar Haveli & Daman & Diu",
    },
+   "dadra and nagar haveli": {
+      id: "26",
+      name: "Dadra & Nagar Haveli & Daman & Diu",
+   },
+   "dadra & nagar haveli": {
+      id: "26",
+      name: "Dadra & Nagar Haveli & Daman & Diu",
+   },
    maharashtra: { id: "27", name: "Maharashtra" },
    karnataka: { id: "29", name: "Karnataka" },
    goa: { id: "30", name: "Goa" },
@@ -51,6 +59,37 @@ const STATES = {
    "andhra pradesh": { id: "37", name: "Andhra Pradesh" },
    ladakh: { id: "38", name: "Ladakh" },
 };
+
+function findBestMatchingState(input) {
+   input = input.toLowerCase().trim();
+
+   if (STATES[input]) {
+      return STATES[input];
+   }
+
+   const inputWords = input.split(/\s+/);
+   let bestMatch = null;
+   let maxMatchCount = 0;
+
+   for (const key of Object.keys(STATES)) {
+      const keyWords = key.split(/\s+/);
+      let matchCount = 0;
+
+      // Count matching words
+      for (const word of inputWords) {
+         if (keyWords.includes(word)) {
+            matchCount++;
+         }
+      }
+
+      if (matchCount > maxMatchCount) {
+         maxMatchCount = matchCount;
+         bestMatch = key;
+      }
+   }
+
+   return bestMatch ? STATES[bestMatch] : null;
+}
 
 function ifFindThenGetKey(obj, value) {
    for (const key in obj) {
@@ -76,13 +115,17 @@ function b2csGetByMyState(table, sellerState = "West Bengal") {
 
    for (const n in table) {
       const row = table[n];
-      const state = sellerState.toLowerCase();
       const tax = +parseFloat(row[atvName] || 0).toFixed(2);
       const csamt = +parseFloat(row[cmName] || 0).toFixed(2);
       const igst = row[cgstName] || 0;
       const sgst = row[sgstName] || 0;
 
-      const { id, name } = STATES[state];
+      const stateIDName = findBestMatchingState(sellerState);
+      if (!stateIDName) {
+         console.log("Not Found", sellerState);
+         continue;
+      }
+      const { id, name } = stateIDName;
 
       const gstTotal = +parseFloat(parseFloat(igst) + parseFloat(sgst)).toFixed(
          2
@@ -119,11 +162,16 @@ function b2csGetByOthersState(table) {
 
    for (const n in table) {
       const row = table[n];
-      const state = row[dsName].toLowerCase();
       const tax = +parseFloat(row[atvName] || 0).toFixed(2);
       const igst = +parseFloat(row[igstName] || 0).toFixed(2);
       const csamt = +parseFloat(row[cmName] || 0).toFixed(2);
-      const { id, name } = STATES[state];
+
+      const stateIDName = findBestMatchingState(row[dsName]);
+      if (!stateIDName) {
+         console.log("Not Found", sellerState);
+         continue;
+      }
+      const { id, name } = stateIDName;
 
       if (!data[id]) {
          data[id] = {};
@@ -168,13 +216,13 @@ function ifFindThenGetGstID(sheets) {
    return gstId;
 }
 
-function margeDataWithOthersDetails(data, GST_ID, session) {
+function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
    const rows = [];
    let totalTaxVal = 0;
    let totalTaxAmt = 0;
 
-   for (const key in data) {
-      const row = data[key];
+   for (const sCode in data) {
+      const row = data[sCode];
 
       for (const per in row) {
          const { tax, csamt } = row[per];
@@ -182,29 +230,46 @@ function margeDataWithOthersDetails(data, GST_ID, session) {
          totalTaxAmt += iamt;
          totalTaxVal += tax;
 
-         rows.push({
-            "sply_ty": "INTER",
-            "rt": +per,
-            "typ": "OE",
-            "pos": key,
-            "txval": tax,
-            "iamt": iamt,
-            "csamt": csamt,
-         });  
+         // for others state
+         if (sCode !== myStateCode) {
+            rows.push({
+               sply_ty: "INTER",
+               rt: +per,
+               typ: "OE",
+               pos: sCode,
+               txval: tax,
+               iamt: iamt,
+               csamt: csamt,
+            });
+
+            // for my state
+         } else {
+            const halfGst = +(iamt / 2).toFixed(2);
+            rows.push({
+               sply_ty: "INTRA",
+               rt: +per,
+               typ: "OE",
+               pos: sCode,
+               txval: tax,
+               camt: halfGst,
+               samt: halfGst,
+               csamt: csamt,
+            });
+         }
       }
    }
 
    const finalData = {
-      "gstin": GST_ID,
-      "fp": session,
-      "version": "GST3.2.1",
-      "hash": "hash",
-      "b2cs": [ ...rows ]
-   }
+      gstin: GST_ID,
+      fp: session,
+      version: "GST3.2.1",
+      hash: "hash",
+      b2cs: [...rows],
+   };
 
    console.log(`Total Tax Value: ${totalTaxVal}`);
    console.log(`Total Tax Amount: ${totalTaxAmt}`);
-   
+
    return finalData;
 }
 

@@ -25,18 +25,21 @@ function downloadCSV(csv, filename) {
    }
 }
 
-// Function to process workbook and generate CSVs
-function processWorkbook(workbook) {
-   workbook.SheetNames.forEach((sheet) => {
-      try {
-         const worksheet = workbook.Sheets[sheet];
-         const csv = worksheetToCSV(worksheet);
-         downloadCSV(csv, `${sheet}.csv`);
-      } catch (error) {
-         console.error(`Error processing sheet ${sheet}:`, error);
-      }
-   });
+function downloadJSON(obj, filename = "gst_return_data.json") {
+   const jsonString = JSON.stringify(obj, null, 0);
+   
+   // Create a Blob with the JSON data
+   const blob = new Blob([jsonString], { type: 'application/json' });
+   
+   const a = document.createElement('a');
+   a.href = URL.createObjectURL(blob);
+   a.download = filename;
+   
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
 }
+
 
 // Function to load Excel file from URL
 async function loadExcelFromURL(url) {
@@ -73,9 +76,7 @@ document.getElementById("button").addEventListener("click", () => {
          const b2csData = getB2CsData(sheets, GST_ID, mmyy);
          console.log(b2csData);
 
-         
-         
-
+         downloadJSON(b2csData, `B2CS_${GST_ID}_${session}_ES.json`);
       };
    }
 });
