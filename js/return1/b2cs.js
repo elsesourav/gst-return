@@ -218,8 +218,10 @@ function ifFindThenGetGstID(sheets) {
 
 function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
    const rows = [];
-   let totalTaxVal = 0;
-   let totalTaxAmt = 0;
+   let totalTaxableValue = 0;
+   let integratedTax = 0;
+   let centralTax = 0;
+   let stateUTTax = 0;
 
    for (const sCode in data) {
       const row = data[sCode];
@@ -227,8 +229,7 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
       for (const per in row) {
          const { tax, csamt } = row[per];
          const iamt = +((tax * per) / 100).toFixed(2);
-         totalTaxAmt += iamt;
-         totalTaxVal += tax;
+         totalTaxableValue += tax;
 
          // for others state
          if (sCode !== myStateCode) {
@@ -241,8 +242,9 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
                iamt: iamt,
                csamt: csamt,
             });
+            integratedTax += iamt;
 
-            // for my state
+         // for my state
          } else {
             const halfGst = +(iamt / 2).toFixed(2);
             rows.push({
@@ -255,6 +257,8 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
                samt: halfGst,
                csamt: csamt,
             });
+            centralTax += halfGst;
+            stateUTTax += halfGst;
          }
       }
    }
@@ -267,8 +271,12 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
       b2cs: [...rows],
    };
 
-   console.log(`Total Tax Value: ${totalTaxVal}`);
-   console.log(`Total Tax Amount: ${totalTaxAmt}`);
+   _total_taxable_value_.innerText = totalTaxableValue.toFixed(2);
+   _integrated_tax_.innerText = integratedTax.toFixed(2);
+   _central_tax_.innerText = centralTax.toFixed(2);
+   _state_ut_tax_.innerText = stateUTTax.toFixed(2);
+   taxOutputSection.classList.remove("hidden");
+   _seller_gst_no_.innerText = GST_ID;
 
    return finalData;
 }

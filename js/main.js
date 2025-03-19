@@ -1,9 +1,15 @@
+const selectSession = document.getElementById("selectSession");
+const generateJsonButton = document.getElementById("generateJson");
+const downloadJsonButton = document.getElementById("_click_to_download_");
+
+// Set current year in footer
+document.getElementById("year").textContent = new Date().getFullYear();
+
 let selectedFile;
-// console.log(window.XLSX);
+let RESULT_FILES = [];
 document.getElementById("input").addEventListener("change", (event) => {
    selectedFile = event.target.files[0];
 });
-const selectSession = document.getElementById("selectSession");
 
 // Function to convert worksheet to CSV
 function worksheetToCSV(worksheet) {
@@ -25,21 +31,6 @@ function downloadCSV(csv, filename) {
    }
 }
 
-function downloadJSON(obj, filename = "gst_return_data.json") {
-   const jsonString = JSON.stringify(obj, null, 0);
-   
-   // Create a Blob with the JSON data
-   const blob = new Blob([jsonString], { type: 'application/json' });
-   
-   const a = document.createElement('a');
-   a.href = URL.createObjectURL(blob);
-   a.download = filename;
-   
-   document.body.appendChild(a);
-   a.click();
-   document.body.removeChild(a);
-}
-
 
 // Function to load Excel file from URL
 async function loadExcelFromURL(url) {
@@ -57,9 +48,12 @@ async function loadExcelFromURL(url) {
 }
 
 
-document.getElementById("button").addEventListener("click", () => {
+generateJsonButton.addEventListener("click", () => {
+   const session = selectSession.value;
+   const [yy, mm] = session.split("-");
+   const mmyy = `${mm}${yy}`
 
-   if (selectedFile) {
+   if (selectedFile && session) {
       let fileReader = new FileReader();
       fileReader.readAsBinaryString(selectedFile);
       fileReader.onload = (event) => {
@@ -67,16 +61,19 @@ document.getElementById("button").addEventListener("click", () => {
          const workbook = XLSX.read(data, { type: "binary" });
          const sheets = workbook.Sheets;
          const GST_ID = ifFindThenGetGstID(sheets);
-         const session = selectSession.value;
-         const [yy, mm] = session.split("-");
-         const mmyy = `${mm}${yy}`
-         console.log(yy, mm);
-         
+
+         RESULT_FILES = [];
          
          const b2csData = getB2CsData(sheets, GST_ID, mmyy);
+         RESULT_FILES.push({ file: b2csData, name: `B2CS_(7)_${GST_ID}_${session}_ES.json`});
          console.log(b2csData);
-
-         downloadJSON(b2csData, `B2CS_${GST_ID}_${session}_ES.json`);
       };
    }
+});
+
+
+downloadJsonButton.addEventListener("click", () => {
+   RESULT_FILES.forEach(({ file, name }) => {
+      downloadCSV(file, name);
+   })
 });

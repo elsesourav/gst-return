@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/styles.css">
     <script src="./js/xlsx.full.min.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/return1/b2cs.js"></script>
@@ -11,8 +12,104 @@
 </head>
 
 <body>
-   <input class="form-control" type="file" id="input" accept=".xls,.xlsx">
-   <input type="month" name="session" id="selectSession">
-   <button class="btn btn-primary" id="button">Convert</button>
+    <div class="app-header">
+        <h1>GST Return Filing Assistant</h1>
+        <p>Upload your Excel file and generate GST return data</p>
+    </div>
+
+    <div id="return-company">Flipkart Sellers Only</div>
+
+    <div class="cover">
+        <label for="your-state">Select Your GST State</label>
+        <select id="sellerState" class="seller-state" name="your-state">
+            <option value="01">01-Jammu & Kashmir</option>
+            <option value="02">02-Himachal Pradesh</option>
+            <option value="03">03-Punjab</option>
+            <option value="04">04-Chandigarh</option>
+            <option value="05">05-Uttarakhand</option>
+            <option value="06">06-Haryana</option>
+            <option value="07">07-Delhi</option>
+            <option value="08">08-Rajasthan</option>
+            <option value="09">09-Uttar Pradesh</option>
+            <option value="10">10-Bihar</option>
+            <option value="11">11-Sikkim</option>
+            <option value="12">12-Arunachal Pradesh</option>
+            <option value="13">13-Nagaland</option>
+            <option value="14">14-Manipur</option>
+            <option value="15">15-Mizoram</option>
+            <option value="16">16-Tripura</option>
+            <option value="17">17-Meghalaya</option>
+            <option value="18">18-Assam</option>
+            <option selected value="19">19-West Bengal</option>
+            <option value="20">20-Jharkhand</option>
+            <option value="21">21-Odisha</option>
+            <option value="22">22-Chhattisgarh</option>
+            <option value="23">23-Madhya Pradesh</option>
+            <option value="24">24-Gujarat</option>
+            <option value="25">25-Daman & Diu</option>
+            <option value="26">26-Dadra & Nagar Haveli & Daman & Diu</option>
+            <option value="27">27-Maharashtra</option>
+            <option value="29">29-Karnataka</option>
+            <option value="30">30-Goa</option>
+            <option value="31">31-Lakshdweep</option>
+            <option value="32">32-Kerala</option>
+            <option value="33">33-Tamil Nadu</option>
+            <option value="34">34-Puducherry</option>
+            <option value="35">35-Andaman & Nicobar Islands</option>
+            <option value="36">36-Telangana</option>
+            <option value="37">37-Andhra Pradesh</option>
+            <option value="38">38-Ladakh</option>
+        </select>
+    </div>
+
+    <div class="cover">
+        <label for="flipkartGSTNo">Enter Flipkart GST NO</label>
+        <input type="text" name="flipkartGSTNo" id="flipkartGSTNo" value="19AACCF0683K1CP">
+    </div>
+    
+    <div class="cover">
+        <input type="month" name="session" id="selectSession">
+        <input class="form-control" type="file" id="input" accept=".xls,.xlsx">
+    </div>
+    
+    <button class="btn btn-primary" id="generateJson">Generate Json</button>
+    
+    <div class="cover half hidden" id="taxOutputSection">
+        <div class="out-tax">
+            <pre>SELLER GST NO: </pre>
+            <span id="_seller_gst_no_"></>
+        </div>
+        <div class="out-tax">
+            <pre>All JSON FILES: </pre>
+            <a id="_click_to_download_">Download Files</a>
+        </div>
+        <div class="out-tax">
+            <pre>Total Taxable value: </pre>
+            <span id="_total_taxable_value_"></>
+        </div>
+        <div class="out-tax">
+            <pre>Integrated Tax : </pre>
+            <span id="_integrated_tax_"></span>
+        </div>
+        <div class="out-tax">
+            <pre>Central Tax : </pre>
+            <span id="_central_tax_"></>
+        </div>
+        <div class="out-tax">
+            <pre>State/UT Tax : </pre>
+            <span id="_state_ut_tax_"></>
+        </div>
+    </div>
+
+
+    <footer>
+        <p>&copy; <span id="year"></span> <strong>@elsesourav</strong>. All Rights Reserved.</p>
+        <p>Crafting code & breaking limits. 🚀</p>
+        <p>
+            <a href="https://github.com/elsesourav" target="_blank">GitHub</a> | 
+            <a href="https://www.instagram.com/elsesourav" target="_blank">Instagram</a> | 
+            <a href="https://in.linkedin.com/in/elsesourav" target="_blank">LinkedIn</a>
+        </p>
+    </footer>
 </body>
 </html>

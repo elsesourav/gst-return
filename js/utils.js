@@ -17,3 +17,16 @@ function getSheetDataToTable(sheet) {
    }
    return data;
 }
+
+function downloadJSON(obj, filename = "my.json") {
+   const jsonString = JSON.stringify(obj, null, 0);
+   const blob = new Blob([jsonString], { type: 'application/json' });
+   
+   const a = document.createElement('a');
+   a.href = URL.createObjectURL(blob);
+   a.download = filename;
+   
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
+}

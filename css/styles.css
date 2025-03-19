@@ -1,0 +1,271 @@
+/* GST Return Application Styles */
+
+/* Base Styles */
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+body {
+   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+   line-height: 1.6;
+   color: #333;
+   background-color: #f5f7fa;
+   padding: 20px;
+   max-width: 1200px;
+   margin: 0 auto;
+}
+
+#return-company {
+   text-align: center;
+   font-size: 28px;
+   font-weight: normal;
+   color: #3498db;
+   text-shadow: 0 0 1px #000;
+   padding: 20px;
+}
+
+/* Container Styles */
+.cover {
+   background-color: #fff;
+   border-radius: 8px;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+   padding: 20px;
+   margin-bottom: 20px;
+   display: grid;
+   grid-template-columns: 1fr 2fr;
+   place-items: center;
+   gap: 10px;
+   transition: all 0.3s ease;
+
+   &.half {
+      grid-template-columns: 1fr 1fr;
+   }
+
+   &.hidden > * {
+      display: none;
+   }
+}
+
+.cover:hover {
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+label {
+   display: block;
+   margin-bottom: 8px;
+   font-weight: 600;
+   color: #2c3e50;
+}
+
+select,
+input[type="text"],
+input[type="month"],
+input[type="file"] {
+   width: 100%;
+   padding: 12px;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+   font-size: 16px;
+   margin-bottom: 10px;
+   transition: border-color 0.3s;
+}
+
+select:focus,
+input:focus {
+   outline: none;
+   border-color: #3498db;
+   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Dropdown Styling */
+.seller-state {
+   background-color: #fff;
+   cursor: pointer;
+}
+
+/* Tax Information Display */
+.out-tax {
+   position: relative;
+   display: grid;
+   justify-items: space-between;
+   align-items: center;
+   gap: 10px;
+   grid-template-columns: 1fr 1fr;
+   padding: 10px 0;
+   border-bottom: 1px solid #eee;
+   font-size: 16px;
+}
+
+.out-tax:last-child {
+   border-bottom: none;
+}
+
+.out-tax pre {
+   font-weight: 600;
+}
+.out-tax span {
+   position: relative;
+   width: 100%;
+   font-weight: 600;
+   color: #2980b9;
+   padding: 5px 10px;
+   background-color: #f8f9fa;
+   border-radius: 4px;
+   text-align: left;
+}
+.out-tax a {
+   position: relative;
+   width: 100%;
+   font-weight: 600;
+   color: #00aaff;
+   text-align: left;
+   cursor: pointer;
+}
+
+/* Button Styling */
+.btn {
+   display: inline-block;
+   width: 100%;
+   padding: 12px 24px;
+   font-size: 16px;
+   font-weight: 600;
+   text-align: center;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   margin-bottom: 20px;
+   transition: all 0.3s ease;
+}
+
+.btn-primary {
+   background-color: #3498db;
+   color: white;
+}
+
+.btn-primary:hover {
+   background-color: #2980b9;
+   transform: translateY(-2px);
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+   transform: translateY(0);
+}
+
+/* File Input Styling */
+.form-control[type="file"] {
+   padding: 10px;
+   background-color: #f8f9fa;
+   border: 2px dashed #ddd;
+   border-radius: 4px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+}
+
+.form-control[type="file"]:hover {
+   border-color: #3498db;
+}
+
+/* Month Input Styling */
+input[type="month"] {
+   cursor: pointer;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+   body {
+      padding: 30px;
+   }
+
+   .cover {
+      padding: 25px;
+   }
+
+   /* Two-column layout for larger screens */
+   .form-row {
+      display: flex;
+      gap: 20px;
+   }
+
+   .form-row .cover {
+      flex: 1;
+   }
+}
+
+@media (max-width: 767px) {
+   body {
+      padding: 15px;
+   }
+
+   .cover {
+      padding: 15px;
+      grid-template-columns: 1fr 1fr;
+   }
+
+   .cover.half {
+      grid-template-columns: 1fr;
+   }
+}
+
+/* Add a header for the application */
+.app-header {
+   text-align: center;
+   margin-bottom: 30px;
+}
+
+.app-header h1 {
+   color: #2c3e50;
+   font-size: 28px;
+   margin-bottom: 10px;
+}
+
+.app-header p {
+   color: #7f8c8d;
+   font-size: 16px;
+}
+
+/* Footer Styling */
+footer {
+   background-color: #f0f4f8;
+   color: #2c3e50;
+   text-align: center;
+   padding: 20px;
+   font-size: 14px;
+   border-top: 1px solid #e1e8ed;
+   border-radius: 8px;
+   margin-top: 30px;
+   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+}
+
+footer p {
+   margin: 8px 0;
+}
+
+footer strong {
+   color: #3498db;
+}
+
+footer a {
+   text-decoration: none;
+   margin: 0 10px;
+   transition: color 0.3s ease;
+}
+
+footer a:hover {
+   text-decoration: underline;
+}
+
+footer a[href*="github"] {
+   color: #00aaff;
+}
+
+footer a[href*="instagram"] {
+   color: #ff007f;
+}
+
+footer a[href*="linkedin"] {
+   color: #0077b5;
+}
