@@ -15,7 +15,7 @@ A web-based tool designed to help Flipkart sellers process and generate GST retu
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/gst-return.git
+   git clone https://github.com/elsesourav/gst-return.git
    ```
 
 2. Navigate to the project directory:
