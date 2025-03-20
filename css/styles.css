@@ -21,7 +21,7 @@
    --footer-color: #2c3e50;
    --footer-border: #e1e8ed;
    --footer-shadow: rgba(0, 0, 0, 0.03);
-   
+
    /* Animation Variables */
    --transition-speed: 0.3s;
    --transition-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -96,6 +96,7 @@ body {
 
 /* Container Styles */
 .cover {
+   position: relative;
    background-color: var(--card-bg);
    border-radius: 8px;
    box-shadow: 0 2px 10px var(--card-shadow);
@@ -145,6 +146,7 @@ select,
 input[type="text"],
 input[type="month"],
 input[type="file"] {
+   position: relative;
    width: 100%;
    padding: 12px;
    border: 1px solid var(--border-color);
@@ -164,6 +166,16 @@ input[type="file"]:hover {
    border-color: var(--primary-color-hover);
    transform: translateY(-1px);
 }
+
+input[type="file"] {
+   color: #888;
+}
+
+input::file-selector-button {
+   background: transparent;
+   border: none;
+   color: var(--text-color);
+ }
 
 select:focus,
 input:focus {
@@ -194,12 +206,24 @@ input:focus {
 }
 
 /* Add animation delay to stagger appearance */
-.out-tax:nth-child(1) span { animation-delay: 0.1s; }
-.out-tax:nth-child(2) span { animation-delay: 0.2s; }
-.out-tax:nth-child(3) span { animation-delay: 0.3s; }
-.out-tax:nth-child(4) span { animation-delay: 0.4s; }
-.out-tax:nth-child(5) span { animation-delay: 0.5s; }
-.out-tax:nth-child(6) span { animation-delay: 0.6s; }
+.out-tax:nth-child(1) span {
+   animation-delay: 0.1s;
+}
+.out-tax:nth-child(2) span {
+   animation-delay: 0.2s;
+}
+.out-tax:nth-child(3) span {
+   animation-delay: 0.3s;
+}
+.out-tax:nth-child(4) span {
+   animation-delay: 0.4s;
+}
+.out-tax:nth-child(5) span {
+   animation-delay: 0.5s;
+}
+.out-tax:nth-child(6) span {
+   animation-delay: 0.6s;
+}
 
 .out-tax:last-child {
    border-bottom: none;
@@ -271,7 +295,7 @@ input:focus {
 }
 
 .btn-primary:before {
-   content: '';
+   content: "";
    position: absolute;
    top: 0;
    left: 0;
@@ -324,9 +348,9 @@ input[type="month"] {
 }
 
 .theme-toggle {
-   position: absolute;
-   top: 20px;
-   right: 20px;
+   position: fixed;
+   top: 1svw;
+   right: 1svw;
    background: none;
    border: none;
    cursor: pointer;
@@ -337,6 +361,7 @@ input[type="month"] {
    align-items: center;
    justify-content: center;
    background-color: var(--card-bg);
+   opacity: 0.5;
    box-shadow: 0 2px 5px var(--card-shadow);
    transition: all var(--transition-speed) var(--transition-function);
    overflow: hidden;
@@ -406,6 +431,14 @@ input[type="month"] {
 
    .cover.half {
       grid-template-columns: 1fr;
+   }
+
+   .cover.main-inp {
+      grid-template-columns: 1fr; 
+   }
+
+   .cover label {
+      font-size: 12px;
    }
 }
 
