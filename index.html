@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./css/styles.css">
     <script src="./js/xlsx.full.min.js"></script>
+    <script src="./js/return1/hsn.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/return1/b2cs.js"></script>
     <script defer src="./js/main.js"></script>
@@ -21,7 +22,7 @@
 
     <div class="cover">
         <label for="your-state">Select Your GST State</label>
-        <select id="sellerState" class="seller-state" name="your-state">
+        <select id="selectedGSTState" class="seller-state" name="your-state">
             <option value="01">01-Jammu & Kashmir</option>
             <option value="02">02-Himachal Pradesh</option>
             <option value="03">03-Punjab</option>
@@ -74,7 +75,7 @@
     
     <button class="btn btn-primary" id="generateJson">Generate Json</button>
     
-    <div class="cover half hidden" id="taxOutputSection">
+    <div class="cover half " id="taxOutputSection">
         <div class="out-tax">
             <pre>SELLER GST NO: </pre>
             <span id="_seller_gst_no_"></>
@@ -98,6 +99,10 @@
         <div class="out-tax">
             <pre>State/UT Tax : </pre>
             <span id="_state_ut_tax_"></>
+        </div>
+
+        <div class="out-tax full">
+            <a href="https://services.gst.gov.in/services/login">Dashboard > TDS and TCS Dashboard > TCS</a>
         </div>
     </div>
 

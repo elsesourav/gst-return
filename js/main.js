@@ -1,12 +1,13 @@
 const selectSession = document.getElementById("selectSession");
 const generateJsonButton = document.getElementById("generateJson");
 const downloadJsonButton = document.getElementById("_click_to_download_");
-
+const selectedGSTState = document.getElementById("selectedGSTState");
+const flipkartGSTNo = document.getElementById("flipkartGSTNo");
 // Set current year in footer
 document.getElementById("year").textContent = new Date().getFullYear();
 
 let selectedFile;
-let RESULT_FILES = [];
+let RESULT_FILE;
 document.getElementById("input").addEventListener("change", (event) => {
    selectedFile = event.target.files[0];
 });
@@ -31,7 +32,6 @@ function downloadCSV(csv, filename) {
    }
 }
 
-
 // Function to load Excel file from URL
 async function loadExcelFromURL(url) {
    try {
@@ -47,33 +47,50 @@ async function loadExcelFromURL(url) {
    }
 }
 
-
 generateJsonButton.addEventListener("click", () => {
+   const stateGSTValue = selectedGSTState.value;
+   const flipkartGSTNoValue = flipkartGSTNo.value;
    const session = selectSession.value;
    const [yy, mm] = session.split("-");
-   const mmyy = `${mm}${yy}`
+   const mmyy = `${mm}${yy}`;
 
    if (selectedFile && session) {
+      RESULT_FILES = [];
       let fileReader = new FileReader();
       fileReader.readAsBinaryString(selectedFile);
       fileReader.onload = (event) => {
          const data = event.target.result;
          const workbook = XLSX.read(data, { type: "binary" });
          const sheets = workbook.Sheets;
-         const GST_ID = ifFindThenGetGstID(sheets);
+         const tableSheets = getTableSheets(sheets);
+         const GST_ID = ifFindThenGetGstID(tableSheets);
 
-         RESULT_FILES = [];
-         
-         const b2csData = getB2CsData(sheets, GST_ID, mmyy);
-         RESULT_FILES.push({ file: b2csData, name: `B2CS_(7)_${GST_ID}_${session}_ES.json`});
+         const b2csData = getB2CsData(tableSheets, GST_ID, stateGSTValue);
          console.log(b2csData);
+         
+         const docIssueData = getDocIssue(tableSheets);
+         console.log(docIssueData);
+
+         const hsnData = getHSNData(tableSheets);
+         console.log(hsnData);
+         
+
+         const supecoData = getSupecoData(tableSheets, flipkartGSTNoValue);
+         console.log(supecoData);
+
+         
+
+         const finalData = margeWithMainData(GST_ID, mmyy, {...b2csData, ...docIssueData, ...hsnData, ...supecoData});
+         console.log(finalData);
+
+         RESULT_FILE = { file: finalData, name: `${GST_ID}_${session}_ES.json` };
       };
    }
 });
 
-
 downloadJsonButton.addEventListener("click", () => {
-   RESULT_FILES.forEach(({ file, name }) => {
-      downloadCSV(file, name);
-   })
+   const { file, name } = RESULT_FILE;
+   downloadJSON(file, name);
 });
+
+

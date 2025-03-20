@@ -60,18 +60,26 @@ const STATES = {
    ladakh: { id: "38", name: "Ladakh" },
 };
 
-function findBestMatchingState(input) {
+function getTableSheets(sheets) {
+   const tableSheets = {};
+   for (const name in sheets) {
+      const sheet = sheets[name];
+      tableSheets[name] = getSheetDataToTable(sheet);
+   }
+   return tableSheets;
+}
+function findBestMatching(input, OBJECT = STATES) {
    input = input.toLowerCase().trim();
 
-   if (STATES[input]) {
-      return STATES[input];
+   if (OBJECT[input]) {
+      return OBJECT[input];
    }
 
    const inputWords = input.split(/\s+/);
    let bestMatch = null;
    let maxMatchCount = 0;
 
-   for (const key of Object.keys(STATES)) {
+   for (const key of Object.keys(OBJECT)) {
       const keyWords = key.split(/\s+/);
       let matchCount = 0;
 
@@ -88,7 +96,7 @@ function findBestMatchingState(input) {
       }
    }
 
-   return bestMatch ? STATES[bestMatch] : null;
+   return bestMatch ? OBJECT[bestMatch] : null;
 }
 
 function ifFindThenGetKey(obj, value) {
@@ -120,7 +128,7 @@ function b2csGetByMyState(table, sellerState = "West Bengal") {
       const igst = row[cgstName] || 0;
       const sgst = row[sgstName] || 0;
 
-      const stateIDName = findBestMatchingState(sellerState);
+      const stateIDName = findBestMatching(sellerState);
       if (!stateIDName) {
          console.log("Not Found", sellerState);
          continue;
@@ -166,7 +174,7 @@ function b2csGetByOthersState(table) {
       const igst = +parseFloat(row[igstName] || 0).toFixed(2);
       const csamt = +parseFloat(row[cmName] || 0).toFixed(2);
 
-      const stateIDName = findBestMatchingState(row[dsName]);
+      const stateIDName = findBestMatching(row[dsName]);
       if (!stateIDName) {
          console.log("Not Found", sellerState);
          continue;
@@ -189,11 +197,11 @@ function b2csGetByOthersState(table) {
    return data;
 }
 
-function ifFindThenGetGstID(sheets) {
+function ifFindThenGetGstID(tSheets) {
    let names = [];
    let gstId = null;
 
-   for (const name in sheets) {
+   for (const name in tSheets) {
       if (
          name.includes("Section 7(A)(2)") ||
          name.includes("Section 7(B)(2)")
@@ -203,20 +211,29 @@ function ifFindThenGetGstID(sheets) {
    }
 
    names.forEach((name) => {
-      const sheet = sheets[name];
-      const cellTable = getSheetDataToTable(sheet);
-      const tableTitle = cellTable[1];
+      const tSheet = tSheets[name];
+      const tableTitle = tSheet[1];
       const GSTIN = ifFindThenGetKey(tableTitle, "GSTIN");
 
-      if (cellTable[2]?.[GSTIN] && !gstId) {
-         gstId = cellTable[2]?.[GSTIN];
+      if (tSheet[2]?.[GSTIN] && !gstId) {
+         gstId = tSheet[2]?.[GSTIN];
       }
    });
 
    return gstId;
 }
 
-function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
+function margeWithMainData(GST_ID, SESSION, rows = {}) {
+   return {
+      gstin: GST_ID,
+      fp: SESSION,
+      version: "GST3.2.1",
+      hash: "hash",
+      ...rows
+   };
+}
+
+function margeDataWithOthersDetails(data, GST_ID, myStateCode = "19") {
    const rows = [];
    let totalTaxableValue = 0;
    let integratedTax = 0;
@@ -244,7 +261,7 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
             });
             integratedTax += iamt;
 
-         // for my state
+            // for my state
          } else {
             const halfGst = +(iamt / 2).toFixed(2);
             rows.push({
@@ -263,14 +280,6 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
       }
    }
 
-   const finalData = {
-      gstin: GST_ID,
-      fp: session,
-      version: "GST3.2.1",
-      hash: "hash",
-      b2cs: [...rows],
-   };
-
    _total_taxable_value_.innerText = totalTaxableValue.toFixed(2);
    _integrated_tax_.innerText = integratedTax.toFixed(2);
    _central_tax_.innerText = centralTax.toFixed(2);
@@ -278,25 +287,188 @@ function margeDataWithOthersDetails(data, GST_ID, session, myStateCode = "19") {
    taxOutputSection.classList.remove("hidden");
    _seller_gst_no_.innerText = GST_ID;
 
-   return finalData;
+   return { b2cs: rows };
 }
 
-function getB2CsData(sheets, GST_ID, session) {
-   let b2csData = {};
+function findStateNameById(id) {
+   const state = Object.values(STATES).find((state) => state.id === id);
+   return state ? state.name : null;
+}
 
-   for (const name in sheets) {
-      const sheet = sheets[name];
-      const cellTable = getSheetDataToTable(sheet);
+function getB2CsData(tSheets, GST_ID, myStateCode = "19") {
+   let b2csData = {};
+   const myStateName = findStateNameById(myStateCode);
+
+   for (const name in tSheets) {
+      const tSheet = tSheets[name];
 
       if (name.includes("Section 7(A)(2)")) {
-         const localStateData = b2csGetByMyState(cellTable, "West Bengal");
+         const localStateData = b2csGetByMyState(tSheet, myStateName);
          if (localStateData) b2csData = localStateData;
       } else if (name.includes("Section 7(B)(2)")) {
-         const othersStateData = b2csGetByOthersState(cellTable);
+         const othersStateData = b2csGetByOthersState(tSheet);
          if (othersStateData) b2csData = { ...b2csData, ...othersStateData };
       }
    }
+   return margeDataWithOthersDetails(b2csData, GST_ID, myStateCode);
+}
 
-   console.log(b2csData);
-   return margeDataWithOthersDetails(b2csData, GST_ID, session);
+function getDocIssue(tSheets) {
+   let docIssueTable;
+
+   for (const name in tSheets) {
+      if (name.includes("Section 13 in GSTR-1")) {
+         docIssueTable = tSheets[name];
+      }
+   }
+
+   const tableTitle = docIssueTable[1];
+   const isfName = ifFindThenGetKey(tableTitle, "Invoice Series From");
+   const istName = ifFindThenGetKey(tableTitle, "To");
+   const tniName = ifFindThenGetKey(tableTitle, "Total Number of Invoices");
+   const ciaName = ifFindThenGetKey(tableTitle, "Cancelled if any");
+
+   if (OR(null, isfName, istName, tniName, ciaName)) return null;
+
+   delete docIssueTable[1];
+   const data = [];
+
+   let i = 1;
+   for (const n in docIssueTable) {
+      const row = docIssueTable[n];
+      const isf = row[isfName];
+      const ist = row[istName];
+      const tni = parseInt(row[tniName]);
+      const cia = parseInt(row[ciaName]);
+
+      if (NOR(0, isf, ist, tni, cia)) continue;
+
+      data.push({
+         num: i++,
+         to: ist,
+         from: isf,
+         totnum: tni,
+         cancel: cia,
+         net_issue: tni - cia,
+      });
+   }
+
+   return {
+      "doc_issue": {
+         "doc_det": [
+            {
+               doc_num: 1,
+               doc_typ: "Invoices for outward supply",
+               docs: [...data],
+            }
+         ]
+      }
+   }
+}
+
+function getHSNData(tSheets) {
+   let hsnData;
+
+   for (const name in tSheets) {
+      if (name.includes("Section 12 in GSTR-1")) {
+         hsnData = tSheets[name];
+      }
+   }
+
+   const tableTitle = hsnData[1];
+   const hnName = ifFindThenGetKey(tableTitle, "HSN Number");
+   const tqnName = ifFindThenGetKey(tableTitle, "Total Quantity in Nos");
+   const ttvrName = ifFindThenGetKey(tableTitle, "Total Taxable Value Rs");
+   const iarName = ifFindThenGetKey(tableTitle, "IGST Amount Rs");
+   const carName = ifFindThenGetKey(tableTitle, "CGST Amount Rs");
+   const sarName = ifFindThenGetKey(tableTitle, "SGST Amount Rs");
+   const crName = ifFindThenGetKey(tableTitle, "Cess Rs");
+
+   if (OR(null, hnName, tqnName, ttvrName, iarName, carName, sarName, crName)) {
+      return null;
+   }
+
+   delete hsnData[1];
+   const data = [];
+
+   let i = 1;
+   for (const n in hsnData) {
+      const row = hsnData[n];
+      const hn = row[hnName];
+      const tqn = parseInt(row[tqnName]);
+      const ttvr = +parseFloat(row[ttvrName]).toFixed(2);
+      const iar = +parseFloat(row[iarName]).toFixed(2);
+      const car = +parseFloat(row[carName]).toFixed(2);
+      const sar = +parseFloat(row[sarName]).toFixed(2);
+      const cr = +parseFloat(row[crName]).toFixed(2);
+      if (NOR(0, hn, tqn, ttvr, iar, car, sar, cr)) continue;
+
+      const totalTax = (iar + car + sar) / ttvr * 100;
+      const tt = +totalTax.toFixed(2);
+
+      data.push({
+         num: i++,
+         hsn_sc: hn,
+         desc: HSN_INFO[hn] || "",
+         uqc: "PAC",
+         qty: tqn,
+         rt: tt,
+         txval: ttvr,
+         iamt: iar,
+         camt: car,
+         samt: sar,
+         csamt: cr,
+      });
+   }
+
+   return {
+      "hsn": {
+         "data": [...data]
+      }
+   };
+}
+
+function getSupecoData(tSheets, flipkartGSTNoValue) {
+   let supecoData;
+
+   for (const name in tSheets) {
+      if (name.includes("Section 3 in GSTR-8")) {
+         supecoData = tSheets[name];
+      }
+   }
+
+   const tableTitle = supecoData[1];
+   const ntvName = ifFindThenGetKey(tableTitle, "Net Taxable Value");
+   const iarName = ifFindThenGetKey(tableTitle, "IGST Amount Rs");
+   const carName = ifFindThenGetKey(tableTitle, "CGST Amount Rs");
+   const sarName = ifFindThenGetKey(tableTitle, "SGST Amount Rs");
+
+   if (OR(null, ntvName, iarName, carName, sarName)) return null;
+
+   delete supecoData[1];
+   const data = [];
+
+   for (const n in supecoData) {
+      const row = supecoData[n];
+      const ntv = +parseFloat(row[ntvName]).toFixed(2);
+      const iar = +parseFloat(row[iarName]).toFixed(2);
+      const car = +parseFloat(row[carName]).toFixed(2);
+      const sar = +parseFloat(row[sarName]).toFixed(2);
+      if (NOR(0, ntv, iar, car, sar)) continue;
+
+      data.push({
+         etin: flipkartGSTNoValue,
+         suppval: ntv,
+         igst: iar,
+         cgst: car,
+         sgst: sar,
+         cess: 0,
+      });
+   }
+
+   return {
+      "supeco": {
+         "clttx": [...data]
+      }
+   };
 }
