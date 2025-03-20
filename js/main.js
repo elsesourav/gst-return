@@ -32,21 +32,6 @@ function downloadCSV(csv, filename) {
    }
 }
 
-// Function to load Excel file from URL
-async function loadExcelFromURL(url) {
-   try {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-      const data = new Uint8Array(arrayBuffer);
-      const workbook = XLSX.read(data, { type: "array" });
-      processWorkbook(workbook);
-   } catch (error) {
-      console.error("Error loading Excel file:", error);
-      document.getElementById("jsondata").innerHTML =
-         "Error loading Excel file: " + error.message;
-   }
-}
-
 generateJsonButton.addEventListener("click", () => {
    const stateGSTValue = selectedGSTState.value;
    const flipkartGSTNoValue = flipkartGSTNo.value;
