@@ -3,8 +3,51 @@ const generateJsonButton = document.getElementById("generateJson");
 const downloadJsonButton = document.getElementById("_click_to_download_");
 const selectedGSTState = document.getElementById("selectedGSTState");
 const flipkartGSTNo = document.getElementById("flipkartGSTNo");
+const themeToggleBtn = document.getElementById("theme-toggle");
+
 // Set current year in footer
 document.getElementById("year").textContent = new Date().getFullYear();
+
+// Theme handling
+function setTheme(themeName) {
+   localStorage.setItem('theme', themeName);
+   document.documentElement.setAttribute('data-theme', themeName);
+}
+
+// Function to toggle between light and dark themes
+function toggleTheme() {
+   if (localStorage.getItem('theme') === 'dark') {
+      setTheme('light');
+   } else {
+      setTheme('dark');
+   }
+}
+
+// Check for saved theme preference or use system preference
+function initTheme() {
+   // Check if user previously selected a theme
+   const savedTheme = localStorage.getItem('theme');
+   
+   if (savedTheme) {
+      setTheme(savedTheme);
+      return;
+   }
+   
+   // Check for system preference
+   const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+   
+   if (prefersDarkScheme.matches) {
+      setTheme('dark');
+   } else {
+      setTheme('light');
+   }
+}
+
+// Initialize theme on page load
+initTheme();
+
+// Add event listener for theme toggle button
+themeToggleBtn.addEventListener('click', toggleTheme);
 
 let selectedFile;
 let RESULT_FILE;

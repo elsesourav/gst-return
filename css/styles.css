@@ -1,5 +1,58 @@
 /* GST Return Application Styles */
 
+/* Theme Variables */
+:root {
+   /* Light Theme (Default) */
+   --bg-color: #f5f7fa;
+   --text-color: #333;
+   --header-color: #2c3e50;
+   --card-bg: #fff;
+   --card-shadow: rgba(0, 0, 0, 0.05);
+   --card-shadow-hover: rgba(0, 0, 0, 0.1);
+   --primary-color: #3498db;
+   --primary-color-hover: #2980b9;
+   --secondary-color: #2c3e50;
+   --border-color: #ddd;
+   --input-bg: #fff;
+   --input-focus-shadow: rgba(52, 152, 219, 0.2);
+   --output-bg: #f8f9fa;
+   --link-color: #00aaff;
+   --footer-bg: #f0f4f8;
+   --footer-color: #2c3e50;
+   --footer-border: #e1e8ed;
+   --footer-shadow: rgba(0, 0, 0, 0.03);
+   
+   /* Animation Variables */
+   --transition-speed: 0.3s;
+   --transition-function: cubic-bezier(0.4, 0, 0.2, 1);
+   --hover-scale: 1.03;
+   --hover-rotate: 2deg;
+   --gradient-primary: linear-gradient(135deg, #3498db, #2980b9);
+   --gradient-secondary: linear-gradient(135deg, #2c3e50, #1a252f);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+   --bg-color: #282a38;
+   --text-color: #e6e6e6;
+   --header-color: #e6e6e6;
+   --card-bg: #030e2b;
+   --card-shadow: rgba(0, 0, 0, 0.2);
+   --card-shadow-hover: rgba(0, 0, 0, 0.3);
+   --primary-color: #4a9ff5;
+   --primary-color-hover: #3a7cbd;
+   --secondary-color: #e6e6e6;
+   --border-color: #2c3e50;
+   --input-bg: #0f3460;
+   --input-focus-shadow: rgba(74, 159, 245, 0.3);
+   --output-bg: #0f3460;
+   --link-color: #4a9ff5;
+   --footer-bg: #16213e;
+   --footer-color: #e6e6e6;
+   --footer-border: #2c3e50;
+   --footer-shadow: rgba(0, 0, 0, 0.2);
+}
+
 /* Base Styles */
 * {
    margin: 0;
@@ -10,11 +63,14 @@
 body {
    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
    line-height: 1.6;
-   color: #333;
-   background-color: #f5f7fa;
+   color: var(--text-color);
+   background-color: var(--bg-color);
+   background-image: radial-gradient(var(--card-shadow) 1px, transparent 1px);
+   background-size: 20px 20px;
    padding: 20px;
    max-width: 1200px;
    margin: 0 auto;
+   transition: all var(--transition-speed) var(--transition-function);
 }
 
 #return-company {
@@ -22,22 +78,36 @@ body {
    font-size: 28px;
    font-weight: normal;
    color: #3498db;
-   text-shadow: 0 0 1px #000;
+   text-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
    padding: 20px;
+   position: relative;
+   animation: pulse 2s infinite alternate;
+   letter-spacing: 1px;
+}
+
+@keyframes pulse {
+   0% {
+      text-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+   }
+   100% {
+      text-shadow: 0 0 15px rgba(52, 152, 219, 0.8);
+   }
 }
 
 /* Container Styles */
 .cover {
-   background-color: #fff;
+   background-color: var(--card-bg);
    border-radius: 8px;
-   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+   box-shadow: 0 2px 10px var(--card-shadow);
    padding: 20px;
    margin-bottom: 20px;
    display: grid;
    grid-template-columns: 1fr 2fr;
    place-items: center;
    gap: 10px;
-   transition: all 0.3s ease;
+   transition: all var(--transition-speed) var(--transition-function);
+   animation: fadeIn 0.5s ease-out;
+   transform-origin: center;
 
    &.half {
       grid-template-columns: 1fr 1fr;
@@ -48,8 +118,19 @@ body {
    }
 }
 
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(10px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}
+
 .cover:hover {
-   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+   box-shadow: 0 5px 15px var(--card-shadow-hover);
 }
 
 /* Form Elements */
@@ -57,7 +138,7 @@ label {
    display: block;
    margin-bottom: 8px;
    font-weight: 600;
-   color: #2c3e50;
+   color: var(--secondary-color);
 }
 
 select,
@@ -66,23 +147,36 @@ input[type="month"],
 input[type="file"] {
    width: 100%;
    padding: 12px;
-   border: 1px solid #ddd;
+   border: 1px solid var(--border-color);
    border-radius: 4px;
    font-size: 16px;
    margin-bottom: 10px;
-   transition: border-color 0.3s;
+   transition: all var(--transition-speed) var(--transition-function);
+   background-color: var(--input-bg);
+   color: var(--text-color);
+   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+select:hover,
+input[type="text"]:hover,
+input[type="month"]:hover,
+input[type="file"]:hover {
+   border-color: var(--primary-color-hover);
+   transform: translateY(-1px);
 }
 
 select:focus,
 input:focus {
    outline: none;
-   border-color: #3498db;
-   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+   border-color: var(--primary-color);
+   box-shadow: 0 0 0 3px var(--input-focus-shadow);
+   transform: translateY(-2px);
+   transition: all 0.2s ease;
 }
 
 /* Dropdown Styling */
 .seller-state {
-   background-color: #fff;
+   background-color: var(--input-bg);
    cursor: pointer;
 }
 
@@ -99,6 +193,14 @@ input:focus {
    font-size: 16px;
 }
 
+/* Add animation delay to stagger appearance */
+.out-tax:nth-child(1) span { animation-delay: 0.1s; }
+.out-tax:nth-child(2) span { animation-delay: 0.2s; }
+.out-tax:nth-child(3) span { animation-delay: 0.3s; }
+.out-tax:nth-child(4) span { animation-delay: 0.4s; }
+.out-tax:nth-child(5) span { animation-delay: 0.5s; }
+.out-tax:nth-child(6) span { animation-delay: 0.6s; }
+
 .out-tax:last-child {
    border-bottom: none;
 }
@@ -110,16 +212,31 @@ input:focus {
    position: relative;
    width: 100%;
    font-weight: 600;
-   color: #2980b9;
-   padding: 5px 10px;
-   background-color: #f8f9fa;
+   color: var(--primary-color-hover);
+   padding: 8px 12px;
+   background-color: var(--output-bg);
    border-radius: 4px;
    text-align: left;
+   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+   transition: all var(--transition-speed) var(--transition-function);
+   animation: fadeInRight 0.5s ease-out;
+   animation-fill-mode: both;
+}
+
+@keyframes fadeInRight {
+   from {
+      opacity: 0;
+      transform: translateX(20px);
+   }
+   to {
+      opacity: 1;
+      transform: translateX(0);
+   }
 }
 .out-tax a {
    position: relative;
    width: 100%;
-   color: #00aaff;
+   color: var(--link-color);
    text-align: left;
    cursor: pointer;
 }
@@ -145,37 +262,115 @@ input:focus {
 }
 
 .btn-primary {
-   background-color: #3498db;
+   background-image: var(--gradient-primary);
    color: white;
+   position: relative;
+   overflow: hidden;
+   z-index: 1;
+   transition: all var(--transition-speed) var(--transition-function);
+}
+
+.btn-primary:before {
+   content: '';
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-image: var(--gradient-primary);
+   filter: brightness(0.85);
+   z-index: -1;
+   opacity: 0;
+   transition: opacity var(--transition-speed) var(--transition-function);
 }
 
 .btn-primary:hover {
-   background-color: #2980b9;
-   transform: translateY(-2px);
-   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   transform: translateY(-3px) scale(1.02);
+   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+   letter-spacing: 0.5px;
+}
+
+.btn-primary:hover:before {
+   opacity: 1;
 }
 
 .btn-primary:active {
    transform: translateY(0);
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* File Input Styling */
 .form-control[type="file"] {
    padding: 10px;
-   background-color: #f8f9fa;
-   border: 2px dashed #ddd;
+   background-color: var(--output-bg);
+   border: 2px dashed var(--border-color);
    border-radius: 4px;
    cursor: pointer;
    transition: all 0.3s ease;
 }
 
 .form-control[type="file"]:hover {
-   border-color: #3498db;
+   border-color: var(--primary-color);
 }
 
 /* Month Input Styling */
 input[type="month"] {
    cursor: pointer;
+}
+
+/* Theme Toggle Button */
+.app-header {
+   position: relative;
+}
+
+.theme-toggle {
+   position: absolute;
+   top: 20px;
+   right: 20px;
+   background: none;
+   border: none;
+   cursor: pointer;
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--card-bg);
+   box-shadow: 0 2px 5px var(--card-shadow);
+   transition: all var(--transition-speed) var(--transition-function);
+   overflow: hidden;
+   animation: fadeIn 0.5s ease-out;
+}
+
+.theme-toggle:hover {
+   transform: scale(1.1) rotate(var(--hover-rotate));
+   box-shadow: 0 3px 8px var(--card-shadow-hover);
+}
+
+.theme-toggle:active {
+   transform: scale(0.95);
+}
+
+.theme-toggle svg {
+   fill: var(--text-color);
+   transition: fill 0.3s ease;
+}
+
+.theme-toggle .sun-icon {
+   display: none;
+}
+
+.theme-toggle .moon-icon {
+   display: block;
+}
+
+[data-theme="dark"] .theme-toggle .sun-icon {
+   display: block;
+}
+
+[data-theme="dark"] .theme-toggle .moon-icon {
+   display: none;
 }
 
 /* Responsive Design */
@@ -221,9 +416,27 @@ input[type="month"] {
 }
 
 .app-header h1 {
-   color: #2c3e50;
-   font-size: 28px;
+   background-image: var(--gradient-primary);
+   background-clip: text;
+   -webkit-background-clip: text;
+   color: transparent;
+   font-size: 32px;
    margin-bottom: 10px;
+   font-weight: 700;
+   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+   position: relative;
+   animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+   from {
+      opacity: 0;
+      transform: translateY(-20px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
 }
 
 .app-header p {
@@ -233,15 +446,30 @@ input[type="month"] {
 
 /* Footer Styling */
 footer {
-   background-color: #f0f4f8;
-   color: #2c3e50;
+   background-color: var(--footer-bg);
+   color: var(--footer-color);
    text-align: center;
    padding: 20px;
    font-size: 14px;
-   border-top: 1px solid #e1e8ed;
+   border-top: 1px solid var(--footer-border);
    border-radius: 8px;
    margin-top: 30px;
-   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+   box-shadow: 0 -2px 10px var(--footer-shadow);
+   transition: all var(--transition-speed) var(--transition-function);
+   animation: slideUp 0.8s ease-out;
+   position: relative;
+   overflow: hidden;
+}
+
+@keyframes slideUp {
+   from {
+      opacity: 0;
+      transform: translateY(20px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
 }
 
 footer p {
@@ -249,7 +477,7 @@ footer p {
 }
 
 footer strong {
-   color: #3498db;
+   color: var(--primary-color);
 }
 
 footer a {
@@ -263,13 +491,13 @@ footer a:hover {
 }
 
 footer a[href*="github"] {
-   color: #00aaff;
+   color: var(--link-color);
 }
 
 footer a[href*="instagram"] {
-   color: #ff007f;
+   color: var(--link-color);
 }
 
 footer a[href*="linkedin"] {
-   color: #0077b5;
+   color: var(--link-color);
 }
