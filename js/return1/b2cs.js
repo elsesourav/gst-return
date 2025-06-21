@@ -227,9 +227,9 @@ function margeWithMainData(GST_ID, SESSION, rows = {}) {
    return {
       gstin: GST_ID,
       fp: SESSION,
-      version: "GST3.2.1",
+      version: "GST3.2.2",
       hash: "hash",
-      ...rows
+      ...rows,
    };
 }
 
@@ -354,16 +354,16 @@ function getDocIssue(tSheets) {
    }
 
    return {
-      "doc_issue": {
-         "doc_det": [
+      doc_issue: {
+         doc_det: [
             {
                doc_num: 1,
                doc_typ: "Invoices for outward supply",
                docs: [...data],
-            }
-         ]
-      }
-   }
+            },
+         ],
+      },
+   };
 }
 
 function getHSNData(tSheets) {
@@ -403,14 +403,14 @@ function getHSNData(tSheets) {
       const cr = +parseFloat(row[crName]).toFixed(2);
       if (NOR(0, hn, tqn, ttvr, iar, car, sar, cr)) continue;
 
-      const totalTax = (iar + car + sar) / ttvr * 100;
+      const totalTax = ((iar + car + sar) / ttvr) * 100;
       const tt = +totalTax.toFixed(2);
 
       data.push({
          num: i++,
          hsn_sc: hn,
          desc: HSN_INFO[hn] || "",
-         uqc: "PAC",
+         uqc: "GMS",
          qty: tqn,
          rt: tt,
          txval: ttvr,
@@ -422,9 +422,9 @@ function getHSNData(tSheets) {
    }
 
    return {
-      "hsn": {
-         "data": [...data]
-      }
+      hsn: {
+         hsn_b2c: [...data],
+      },
    };
 }
 
@@ -467,8 +467,8 @@ function getSupecoData(tSheets, flipkartGSTNoValue) {
    }
 
    return {
-      "supeco": {
-         "clttx": [...data]
-      }
+      supeco: {
+         clttx: [...data],
+      },
    };
 }
