@@ -8,6 +8,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import appIcon from "@/assets/icon.png";
 
 export function LoginPage() {
   const { signInWithGoogle, loading } = useAuthStore();
@@ -43,7 +44,7 @@ export function LoginPage() {
           {/* Logo / Brand */}
           <div className="text-center mb-8">
             <div className="relative mx-auto size-20">
-              <img src="./src/icon.png" alt="Logo" className="w-full h-full" />
+              <img src={appIcon} alt="Logo" className="w-full h-full" />
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">
               GST Return <span className="text-brand-300">Pro</span>
