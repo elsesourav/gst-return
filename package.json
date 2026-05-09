@@ -1,0 +1,49 @@
+{
+  "name": "gst-return",
+  "version": "1.0.0",
+  "description": "A web-based tool designed to help Flipkart sellers process and generate GST return data efficiently. This application simplifies the process of handling B2CS transactions, HSN data, and document issues for GST returns.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elsesourav/gst-return.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/elsesourav/gst-return/issues"
+  },
+  "homepage": "https://github.com/elsesourav/gst-return#readme",
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.20",
+    "firebase": "^12.13.0",
+    "lucide-react": "^1.14.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-dropzone": "^15.0.0",
+    "react-hot-toast": "^2.6.0",
+    "react-router-dom": "^7.15.0",
+    "recharts": "^3.8.1",
+    "tailwind-merge": "^3.5.0",
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.5.0",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.11"
+  }
+}

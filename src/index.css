@@ -1,0 +1,355 @@
+@import "tailwindcss";
+
+/* ============================================
+   GST Return Pro - Design System
+   ============================================ */
+
+@theme {
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+
+  --color-accent-50: #f0fdf4;
+  --color-accent-100: #dcfce7;
+  --color-accent-200: #bbf7d0;
+  --color-accent-300: #86efac;
+  --color-accent-400: #4ade80;
+  --color-accent-500: #22c55e;
+  --color-accent-600: #16a34a;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+
+  --color-surface-0: #ffffff;
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1e293b;
+  --color-surface-900: #0f172a;
+  --color-surface-950: #020617;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+/* Theme Variables */
+:root {
+   /* Light Theme (Default) */
+   --bg-color: #f5f7fa;
+   --text-color: #333;
+   --header-color: #2c3e50;
+   --card-bg: #fff;
+   --card-shadow: rgba(0, 0, 0, 0.05);
+   --card-shadow-hover: rgba(0, 0, 0, 0.1);
+   --primary-color: #3498db;
+   --primary-color-hover: #2980b9;
+   --secondary-color: #2c3e50;
+   --border-color: #ddd;
+   --input-bg: #fff;
+   --input-focus-shadow: rgba(52, 152, 219, 0.2);
+   --output-bg: #f8f9fa;
+   --link-color: #00aaff;
+   --footer-bg: #f0f4f8;
+   --footer-color: #2c3e50;
+   --footer-border: #e1e8ed;
+   --footer-shadow: rgba(0, 0, 0, 0.03);
+
+   /* Animation Variables */
+   --transition-speed: 0.3s;
+   --transition-function: cubic-bezier(0.4, 0, 0.2, 1);
+   --hover-scale: 1.03;
+   --hover-rotate: 2deg;
+   --gradient-primary: linear-gradient(135deg, #3498db, #2980b9);
+   --gradient-secondary: linear-gradient(135deg, #2c3e50, #1a252f);
+}
+
+/* ============================================
+   Dark mode overrides
+   ============================================ */
+.dark {
+  --color-surface-0: #0f172a;
+  --color-surface-50: #1e293b;
+  --color-surface-100: #334155;
+  --color-surface-200: #475569;
+  --color-surface-300: #64748b;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #cbd5e1;
+  --color-surface-600: #e2e8f0;
+  --color-surface-700: #f1f5f9;
+  --color-surface-800: #f8fafc;
+  --color-surface-900: #ffffff;
+  --color-surface-950: #ffffff;
+
+
+  --bg-color: #282a38;
+  --text-color: #e6e6e6;
+  --header-color: #e6e6e6;
+  --card-bg: #030e2b;
+  --card-shadow: rgba(0, 0, 0, 0.2);
+  --card-shadow-hover: rgba(0, 0, 0, 0.3);
+  --primary-color: #4a9ff5;
+  --primary-color-hover: #3a7cbd;
+  --secondary-color: #e6e6e6;
+  --border-color: #2c3e50;
+  --input-bg: #0f3460;
+  --input-focus-shadow: rgba(74, 159, 245, 0.3);
+  --output-bg: #0f3460;
+  --link-color: #4a9ff5;
+  --footer-bg: #16213e;
+  --footer-color: #e6e6e6;
+  --footer-border: #2c3e50;
+  --footer-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+   --bg-color: #282a38;
+   --text-color: #e6e6e6;
+   --header-color: #e6e6e6;
+   --card-bg: #030e2b;
+   --card-shadow: rgba(0, 0, 0, 0.2);
+   --card-shadow-hover: rgba(0, 0, 0, 0.3);
+   --primary-color: #4a9ff5;
+   --primary-color-hover: #3a7cbd;
+   --secondary-color: #e6e6e6;
+   --border-color: #2c3e50;
+   --input-bg: #0f3460;
+   --input-focus-shadow: rgba(74, 159, 245, 0.3);
+   --output-bg: #0f3460;
+   --link-color: #4a9ff5;
+   --footer-bg: #16213e;
+   --footer-color: #e6e6e6;
+   --footer-border: #2c3e50;
+   --footer-shadow: rgba(0, 0, 0, 0.2);
+}
+
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-color);
+  background-image: radial-gradient(var(--card-shadow) 1px, transparent 1px);
+  background-size: 20px 20px;
+  padding: 20px;
+  color: var(--color-surface-900);
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+/* ============================================
+   Custom Scrollbar
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-300);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-400);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-surface-200);
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-100) 25%,
+    var(--color-surface-200) 50%,
+    var(--color-surface-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ============================================
+   Glass Morphism Utility
+   ============================================ */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   Component Patterns
+   ============================================ */
+.card {
+  background: var(--color-surface-0);
+  border: 1px solid var(--color-surface-200);
+  border-radius: var(--radius-xl);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--color-brand-200);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08);
+}
+
+.dark .card {
+  border-color: var(--color-surface-200);
+}
+
+.dark .card:hover {
+  border-color: var(--color-brand-500);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+}
+
+/* ============================================
+   Toast Customization
+   ============================================ */
+.toast-custom {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
