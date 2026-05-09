@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store";
 import { Button } from "@/components/ui";
 import {
@@ -11,12 +13,21 @@ import toast from "react-hot-toast";
 import appIcon from "@/assets/icon.png";
 
 export function LoginPage() {
-  const { signInWithGoogle, loading } = useAuthStore();
+  const { signInWithGoogle, loading, user } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleLogin = async () => {
     try {
       await signInWithGoogle();
       toast.success("Welcome back! 🎉");
+      navigate("/", { replace: true });
     } catch {
       toast.error("Sign in failed. Please try again.");
     }
@@ -46,8 +57,8 @@ export function LoginPage() {
             <div className="relative mx-auto size-20">
               <img src={appIcon} alt="Logo" className="w-full h-full" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              GST Return <span className="text-brand-300">Pro</span>
+            <h1 className="text-3xl font-bold text-surface-900 mb-2">
+              GST Return
             </h1>
             <p className="text-surface-400 text-sm">
               Smart GST processing for marketplace sellers
@@ -55,31 +66,31 @@ export function LoginPage() {
           </div>
 
           {/* Features */}
-          <div className="relative w-full flex justify-center flex-col mb-4">
+          <div className="relative w-full flex justify-center flex-col gap-2 mb-4">
             {[
               {
-                emoji: <ShoppingBagIcon></ShoppingBagIcon>,
+                emoji: <ShoppingBagIcon className="size-5"></ShoppingBagIcon>,
                 text: "Process Flipkart, Amazon & more",
               },
               {
-                emoji: <ChevronsUp></ChevronsUp>,
+                emoji: <ChevronsUp className="size-5"></ChevronsUp>,
                 text: "Auto-generate GST returns",
               },
               {
-                emoji: <ChartSpline></ChartSpline>,
+                emoji: <ChartSpline className="size-5"></ChartSpline>,
                 text: "Analytics & state-wise insights",
               },
               {
-                emoji: <UsersRound></UsersRound>,
+                emoji: <UsersRound className="size-5"></UsersRound>,
                 text: "Manage multiple clients",
               },
             ].map((feature, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 text-surface-300 text-sm animate-fade-in"
+                className="flex ml-4 items-center gap-3 text-surface-300 text-sm animate-fade-in"
                 style={{ animationDelay: `${(i + 1) * 100}ms` }}
               >
-                <span className="text-lg">{feature.emoji}</span>
+                {feature.emoji}
                 <span>{feature.text}</span>
               </div>
             ))}

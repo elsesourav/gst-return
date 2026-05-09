@@ -1,4 +1,4 @@
-# ES GST Return
+# GST Return Pro
 
 A production-ready SaaS-style web application for **GST Return Processing** based on marketplace sales data. Built with React, TypeScript, Firebase, and Tailwind CSS.
 
