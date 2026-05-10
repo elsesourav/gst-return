@@ -163,7 +163,6 @@ body {
   background-color: var(--bg-color);
   background-image: radial-gradient(var(--card-shadow) 1px, transparent 1px);
   background-size: 20px 20px;
-  padding: 20px;
   color: var(--color-surface-900);
   min-height: 100svh;
   -webkit-font-smoothing: antialiased;
@@ -171,7 +170,9 @@ body {
 }
 
 #root {
+  position: relative;
   min-height: 100svh;
+  width: 100svw;
 }
 
 /* ============================================

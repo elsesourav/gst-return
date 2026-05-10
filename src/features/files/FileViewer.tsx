@@ -13,6 +13,7 @@ import { cn, formatCurrency } from '@/utils';
 import { Input } from '@/components/ui';
 import { Modal } from '@/components/Modal';
 import { Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ExcelSheetViewer } from '@/features/flipkart/StateDataTableView';
 import type { StandardizedRecord } from '@/types';
 
 // ============================================
@@ -154,9 +155,9 @@ export function DataTableViewer({ data, title }: DataTableViewerProps) {
       </div>
 
       {/* Table */}
-      <div className="border border-surface-200 rounded-xl overflow-hidden">
-        <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
-          <table className="w-full text-sm">
+      <div className="border border-surface-200 rounded-xl overflow-hidden flex-1 flex flex-col min-h-0">
+        <div className="overflow-auto h-[70vh] bg-surface-0 relative">
+          <table className="w-full text-sm relative">
             <thead className="bg-surface-50 sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -246,7 +247,7 @@ export function JsonViewer({ data, title }: JsonViewerProps) {
       {title && (
         <h3 className="text-sm font-semibold text-surface-900">{title}</h3>
       )}
-      <pre className="bg-surface-900 text-surface-100 rounded-xl p-4 overflow-auto max-h-[500px] text-xs font-mono leading-relaxed">
+      <pre className="bg-surface-900 text-surface-100 rounded-xl p-4 overflow-auto h-[70vh] text-xs font-mono leading-relaxed">
         {formattedJson}
       </pre>
     </div>
@@ -262,8 +263,9 @@ interface FileViewerModalProps {
   onClose: () => void;
   data: StandardizedRecord[] | null;
   jsonData?: unknown;
+  excelData?: Record<string, any[]> | null;
   title: string;
-  mode?: 'table' | 'json';
+  mode?: 'table' | 'json' | 'excel';
 }
 
 export function FileViewerModal({
@@ -271,12 +273,15 @@ export function FileViewerModal({
   onClose,
   data,
   jsonData,
+  excelData,
   title,
   mode = 'table',
 }: FileViewerModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} size="full">
-      {mode === 'table' && data ? (
+      {mode === 'excel' && excelData ? (
+        <ExcelSheetViewer sheetsData={excelData} />
+      ) : mode === 'table' && data ? (
         <DataTableViewer data={data} />
       ) : (
         <JsonViewer data={jsonData || data} />

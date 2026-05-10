@@ -1,61 +1,72 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore, useClientStore } from '@/store';
-import { Button, Card, Input, EmptyState, Skeleton } from '@/components/ui';
-import { Modal, ConfirmDialog } from '@/components/Modal';
-import { formatDate, formatRelativeTime } from '@/utils';
+import { Modal, NameConfirmDialog } from "@/components/Modal";
+import { Button, Card, EmptyState, Input, Skeleton } from "@/components/ui";
+import { useAuthStore, useClientStore } from "@/store";
+import type { Client, PlatformConfig } from "@/types";
+import { formatRelativeTime } from "@/utils";
 import {
-  Plus,
-  Users,
-  ShoppingBag,
-  Edit3,
-  Trash2,
   ArrowRight,
+  Clock,
+  Edit3,
+  Handbag,
   Package,
-  TrendingUp,
-  FileSpreadsheet,
-} from 'lucide-react';
-import toast from 'react-hot-toast';
-import type { Client, PlatformConfig } from '@/types';
+  Plus,
+  ShoppingCart,
+  Trash2,
+  Users,
+  UsersIcon,
+  WalletMinimal,
+  Warehouse
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 // Platform configurations
 const PLATFORMS: PlatformConfig[] = [
   {
-    id: 'flipkart',
-    name: 'Flipkart',
-    icon: '🛒',
-    color: '#F7D732',
-    gradient: 'from-yellow-400 to-amber-500',
+    id: "flipkart",
+    name: "Flipkart",
+    icon: WalletMinimal,
+    color: "#F7D732",
+    gradient: "from-yellow-400 to-amber-500",
     enabled: true,
   },
   {
-    id: 'amazon',
-    name: 'Amazon',
-    icon: '📦',
-    color: '#FF9900',
-    gradient: 'from-orange-400 to-orange-600',
+    id: "amazon",
+    name: "Amazon",
+    icon: ShoppingCart,
+    color: "#FF9900",
+    gradient: "from-orange-400 to-orange-600",
     enabled: false,
   },
   {
-    id: 'meesho',
-    name: 'Meesho',
-    icon: '🛍️',
-    color: '#E91E63',
-    gradient: 'from-pink-500 to-rose-600',
+    id: "meesho",
+    name: "Meesho",
+    icon: Handbag,
+    color: "#E91E63",
+    gradient: "from-pink-500 to-rose-600",
     enabled: false,
   },
 ];
 
 export function Dashboard() {
   const { user } = useAuthStore();
-  const { clients, loading, fetchClients, createClient, updateClient, deleteClient } = useClientStore();
+  const {
+    clients,
+    loading,
+    fetchClients,
+    createClient,
+    updateClient,
+    deleteClient,
+  } = useClientStore();
   const navigate = useNavigate();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-  const [clientName, setClientName] = useState('');
+  const [clientName, setClientName] = useState("");
+  const [clientGSTNumber, setClientGSTNumber] = useState("");
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
@@ -66,19 +77,20 @@ export function Dashboard() {
 
   const handleCreateClient = async () => {
     if (!clientName.trim()) {
-      toast.error('Please enter a client name');
+      toast.error("Please enter a client name");
       return;
     }
     if (!user) return;
 
     try {
       setCreating(true);
-      await createClient(user.uid, clientName.trim());
-      toast.success('Client created successfully! 🎉');
-      setClientName('');
+      await createClient(user.uid, clientName.trim(), clientGSTNumber.trim());
+      toast.success("Client created successfully! 🎉");
+      setClientName("");
+      setClientGSTNumber("");
       setShowCreateModal(false);
     } catch {
-      toast.error('Failed to create client');
+      toast.error("Failed to create client");
     } finally {
       setCreating(false);
     }
@@ -89,11 +101,16 @@ export function Dashboard() {
 
     try {
       setCreating(true);
-      await updateClient(user.uid, selectedClient.id, clientName.trim());
-      toast.success('Client updated successfully');
+      await updateClient(
+        user.uid,
+        selectedClient.id,
+        clientName.trim(),
+        clientGSTNumber.trim(),
+      );
+      toast.success("Client updated successfully");
       setShowEditModal(false);
     } catch {
-      toast.error('Failed to update client');
+      toast.error("Failed to update client");
     } finally {
       setCreating(false);
     }
@@ -105,10 +122,10 @@ export function Dashboard() {
     try {
       setCreating(true);
       await deleteClient(user.uid, selectedClient.id);
-      toast.success('Client deleted');
+      toast.success("Client deleted");
       setShowDeleteConfirm(false);
     } catch {
-      toast.error('Failed to delete client');
+      toast.error("Failed to delete client");
     } finally {
       setCreating(false);
     }
@@ -117,6 +134,7 @@ export function Dashboard() {
   const openEdit = (client: Client) => {
     setSelectedClient(client);
     setClientName(client.name);
+    setClientGSTNumber(client.gstNumber || "");
     setShowEditModal(true);
   };
 
@@ -131,7 +149,7 @@ export function Dashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-surface-900">
-            Welcome back, {user?.displayName?.split(' ')[0]} 👋
+            Welcome back, {user?.displayName?.split(" ")[0]} 👋
           </h1>
           <p className="text-surface-500 mt-1">
             Manage your GST returns across multiple platforms
@@ -145,44 +163,12 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          {
-            icon: <Users className="w-5 h-5" />,
-            label: 'Total Clients',
-            value: clients.length,
-            color: 'text-brand-600 bg-brand-50',
-          },
-          {
-            icon: <FileSpreadsheet className="w-5 h-5" />,
-            label: 'Active Platforms',
-            value: PLATFORMS.filter((p) => p.enabled).length,
-            color: 'text-accent-600 bg-accent-50',
-          },
-          {
-            icon: <TrendingUp className="w-5 h-5" />,
-            label: 'Reports Generated',
-            value: '—',
-            color: 'text-purple-600 bg-purple-50',
-          },
-        ].map((stat, i) => (
-          <Card key={i} className="flex items-center gap-4 p-5">
-            <div className={`p-2.5 rounded-xl ${stat.color}`}>{stat.icon}</div>
-            <div>
-              <p className="text-2xl font-bold text-surface-900">{stat.value}</p>
-              <p className="text-xs text-surface-500">{stat.label}</p>
-            </div>
-          </Card>
-        ))}
-      </div>
-
       {/* Platform Services */}
-      <section>
-        <h2 className="text-lg font-semibold text-surface-900 mb-4">
-          📦 Platform Services
+      <section className="mb-20">
+        <h2 className="text-lg font-semibold flex gap-2 text-surface-900 mb-4">
+          <Warehouse /> Platform Services
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
           {PLATFORMS.map((platform) => (
             <Card
               key={platform.id}
@@ -192,20 +178,22 @@ export function Dashboard() {
                   ? () => navigate(`/platform/${platform.id}`)
                   : undefined
               }
-              className={`relative overflow-hidden ${!platform.enabled ? 'opacity-60' : ''}`}
+              className={`relative overflow-hidden p-10 ${!platform.enabled ? "opacity-60" : ""}`}
             >
               {/* Gradient accent */}
               <div
-                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${platform.gradient}`}
+                className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r ${platform.gradient}`}
               />
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">{platform.icon}</span>
+                  <platform.icon className="size-10 text-surface-700" />
                   <div>
-                    <h3 className="font-semibold text-surface-900">{platform.name}</h3>
+                    <h3 className="font-semibold text-surface-900">
+                      {platform.name}
+                    </h3>
                     <p className="text-xs text-surface-500">
-                      {platform.enabled ? 'Active' : 'Coming Soon'}
+                      {platform.enabled ? "Active" : "Coming Soon"}
                     </p>
                   </div>
                 </div>
@@ -225,14 +213,14 @@ export function Dashboard() {
       {/* Clients Section */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-surface-900">
-            👥 Your Clients
+          <h2 className="text-lg flex gap-2 font-semibold text-surface-900">
+            <UsersIcon /> Your Clients
           </h2>
           <Button
             size="sm"
             icon={<Plus className="w-4 h-4" />}
             onClick={() => {
-              setClientName('');
+              setClientName("");
               setShowCreateModal(true);
             }}
           >
@@ -259,7 +247,7 @@ export function Dashboard() {
               <Button
                 icon={<Plus className="w-4 h-4" />}
                 onClick={() => {
-                  setClientName('');
+                  setClientName("");
                   setShowCreateModal(true);
                 }}
               >
@@ -268,7 +256,7 @@ export function Dashboard() {
             }
           />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {clients.map((client, i) => (
               <Card
                 key={client.id}
@@ -277,14 +265,22 @@ export function Dashboard() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-linear-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                       {client.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-surface-900">{client.name}</h3>
-                      <p className="text-xs text-surface-500">
-                        Created {formatDate(client.createdAt)}
-                      </p>
+                      <h3 className="font-semibold text-surface-900">
+                        {client.name}
+                      </h3>
+                      {client.gstNumber ? (
+                        <p className="text-xs font-mono text-brand-100 bg-brand-700/50 px-1.5 py-0.5 rounded mt-0.5 inline-block">
+                          {client.gstNumber}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-surface-400 mt-0.5">
+                          No GST number
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -316,7 +312,7 @@ export function Dashboard() {
                   <span className="text-xs text-surface-400">
                     Updated {formatRelativeTime(client.updatedAt)}
                   </span>
-                  <ShoppingBag className="w-4 h-4 text-surface-300" />
+                  <Clock className="w-4 h-4 text-surface-300" />
                 </div>
               </Card>
             ))}
@@ -325,14 +321,16 @@ export function Dashboard() {
             <Card
               hoverable
               onClick={() => {
-                setClientName('');
+                setClientName("");
                 setShowCreateModal(true);
               }}
               className="flex items-center justify-center min-h-[120px] border-2 border-dashed border-surface-300 hover:border-brand-400 bg-transparent"
             >
               <div className="text-center">
                 <Plus className="w-8 h-8 text-surface-400 mx-auto mb-2" />
-                <span className="text-sm font-medium text-surface-500">Add Client</span>
+                <span className="text-sm font-medium text-surface-500">
+                  Add Client
+                </span>
               </div>
             </Card>
           </div>
@@ -360,8 +358,17 @@ export function Dashboard() {
             onChange={(e) => setClientName(e.target.value)}
             autoFocus
           />
+          <Input
+            label="GST Number"
+            placeholder="e.g., 19GAGPB5700L1ZN"
+            value={clientGSTNumber}
+            onChange={(e) => setClientGSTNumber(e.target.value.toUpperCase())}
+          />
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => setShowCreateModal(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" isLoading={creating}>
@@ -392,6 +399,12 @@ export function Dashboard() {
             onChange={(e) => setClientName(e.target.value)}
             autoFocus
           />
+          <Input
+            label="GST Number"
+            placeholder="e.g., 19GAGPB5700L1ZN"
+            value={clientGSTNumber}
+            onChange={(e) => setClientGSTNumber(e.target.value.toUpperCase())}
+          />
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="secondary" onClick={() => setShowEditModal(false)}>
               Cancel
@@ -403,15 +416,12 @@ export function Dashboard() {
         </form>
       </Modal>
 
-      {/* Delete Confirmation */}
-      <ConfirmDialog
+      {/* Delete Confirmation — type name to confirm */}
+      <NameConfirmDialog
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleDeleteClient}
-        title="Delete Client"
-        message={`Are you sure you want to delete "${selectedClient?.name}"? All associated data will be permanently removed.`}
-        confirmText="Delete"
-        variant="danger"
+        clientName={selectedClient?.name || ""}
         isLoading={creating}
       />
     </div>

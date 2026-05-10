@@ -68,6 +68,7 @@ export const useFileStore = create<FileState>((set) => ({
       const processedData = await firestoreService.getProcessedData(userId, clientId, platform);
       set({ processedData, loading: false });
     } catch (error) {
+      console.error("fetchProcessedData Error:", error);
       const message = error instanceof Error ? error.message : 'Failed to fetch processed data';
       set({ error: message, loading: false });
     }
@@ -95,6 +96,7 @@ export const useFileStore = create<FileState>((set) => ({
       const history = await firestoreService.getHistory(userId, clientId, platform);
       set({ history, loading: false });
     } catch (error) {
+      console.error("fetchHistory Error:", error);
       const message = error instanceof Error ? error.message : 'Failed to fetch history';
       set({ error: message, loading: false });
     }

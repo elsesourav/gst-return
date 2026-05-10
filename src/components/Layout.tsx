@@ -35,7 +35,7 @@ export function Layout() {
   const pathParts = location.pathname.split('/').filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-surface-50 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {/* Top Navigation */}
       <header className="sticky top-0 z-40 glass border-b border-surface-200">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">

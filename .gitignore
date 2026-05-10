@@ -24,4 +24,4 @@ Thumbs.db
 npm-debug.log*
 
 # Old backup
-# _old_backup/
+_old_backup

@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 // ============================================
 // Core Application Types
 // ============================================
@@ -13,13 +14,14 @@ export interface User {
 }
 
 export interface UserSettings {
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   autoSave: boolean;
 }
 
 export interface Client {
   id: string;
   name: string;
+  gstNumber?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -28,12 +30,12 @@ export interface Client {
 // Platform Types
 // ============================================
 
-export type Platform = 'flipkart' | 'amazon' | 'meesho';
+export type Platform = "flipkart" | "amazon" | "meesho";
 
 export interface PlatformConfig {
   id: Platform;
   name: string;
-  icon: string;
+  icon: LucideIcon;
   color: string;
   gradient: string;
   enabled: boolean;
@@ -43,7 +45,28 @@ export interface PlatformConfig {
 // File & Upload Types
 // ============================================
 
-export type FileType = 'sales_report' | 'gst_report' | 'json_data' | 'generated';
+export type FileType =
+  | "sales_input"
+  | "gstr_input"
+  | "sales_gstr1_output"
+  | "gstr_return_output"
+  | "json_data"
+  | "generated";
+
+// A stored file — JSON content saved inline in Firestore (no Firebase Storage)
+export interface SessionFile {
+  id: string;
+  clientId: string;
+  platform: Platform;
+  fileName: string;
+  fileType: FileType;
+  fileSize: number; // bytes of the JSON string
+  jsonData: unknown; // the actual JSON content
+  rawExcelData?: Record<string, any[]>; // Original excel sheets
+  session: string; // 'YYYY-MM'
+  uploadedAt: string;
+  metadata?: Record<string, unknown>;
+}
 
 export interface UploadedFile {
   id: string;
@@ -64,7 +87,7 @@ export interface UploadBatch {
   platform: Platform;
   files: UploadedFile[];
   createdAt: string;
-  status: 'pending' | 'processing' | 'completed' | 'error';
+  status: "pending" | "processing" | "completed" | "error";
 }
 
 // ============================================
@@ -91,7 +114,7 @@ export interface StandardizedRecord {
   totalAmount: number;
   platform: Platform;
   invoiceNumber?: string;
-  returnType?: 'B2B' | 'B2CS' | 'B2CL' | 'HSN';
+  returnType?: "B2B" | "B2CS" | "B2CL" | "HSN";
 }
 
 export interface ProcessedData {
@@ -175,7 +198,7 @@ export interface ComparisonSummary {
 // Analytics Types
 // ============================================
 
-export type AnalyticsFilter = 'monthly' | 'quarterly' | 'yearly';
+export type AnalyticsFilter = "monthly" | "quarterly" | "yearly";
 
 export interface ChartDataPoint {
   label: string;
@@ -191,12 +214,21 @@ export interface HistoryEntry {
   id: string;
   clientId: string;
   platform: Platform;
-  type: 'upload' | 'generation' | 'comparison' | 'export';
+  type: "upload" | "generation" | "comparison" | "export";
   title: string;
   description: string;
-  fileIds: string[];
+  fileIds: string[]; // IDs of SessionFile docs
+  files?: SessionFileMeta[]; // lightweight metadata for display
   createdAt: string;
   metadata?: Record<string, unknown>;
+}
+
+// Lightweight file info stored inside HistoryEntry for quick display
+export interface SessionFileMeta {
+  id: string;
+  fileName: string;
+  fileType: FileType;
+  fileSize: number;
 }
 
 // ============================================
@@ -213,7 +245,7 @@ export interface ConfirmDialogProps extends ModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: 'danger' | 'warning' | 'info';
+  variant?: "danger" | "warning" | "info";
   onConfirm: () => void;
 }
 
@@ -222,46 +254,49 @@ export interface ConfirmDialogProps extends ModalProps {
 // ============================================
 
 export const INDIAN_STATES: Record<string, string> = {
-  '01': 'Jammu & Kashmir',
-  '02': 'Himachal Pradesh',
-  '03': 'Punjab',
-  '04': 'Chandigarh',
-  '05': 'Uttarakhand',
-  '06': 'Haryana',
-  '07': 'Delhi',
-  '08': 'Rajasthan',
-  '09': 'Uttar Pradesh',
-  '10': 'Bihar',
-  '11': 'Sikkim',
-  '12': 'Arunachal Pradesh',
-  '13': 'Nagaland',
-  '14': 'Manipur',
-  '15': 'Mizoram',
-  '16': 'Tripura',
-  '17': 'Meghalaya',
-  '18': 'Assam',
-  '19': 'West Bengal',
-  '20': 'Jharkhand',
-  '21': 'Odisha',
-  '22': 'Chhattisgarh',
-  '23': 'Madhya Pradesh',
-  '24': 'Gujarat',
-  '25': 'Daman & Diu',
-  '26': 'Dadra & Nagar Haveli',
-  '27': 'Maharashtra',
-  '28': 'Andhra Pradesh (Old)',
-  '29': 'Karnataka',
-  '30': 'Goa',
-  '31': 'Lakshadweep',
-  '32': 'Kerala',
-  '33': 'Tamil Nadu',
-  '34': 'Puducherry',
-  '35': 'Andaman & Nicobar',
-  '36': 'Telangana',
-  '37': 'Andhra Pradesh',
-  '38': 'Ladakh',
+  "01": "Jammu & Kashmir",
+  "02": "Himachal Pradesh",
+  "03": "Punjab",
+  "04": "Chandigarh",
+  "05": "Uttarakhand",
+  "06": "Haryana",
+  "07": "Delhi",
+  "08": "Rajasthan",
+  "09": "Uttar Pradesh",
+  "10": "Bihar",
+  "11": "Sikkim",
+  "12": "Arunachal Pradesh",
+  "13": "Nagaland",
+  "14": "Manipur",
+  "15": "Mizoram",
+  "16": "Tripura",
+  "17": "Meghalaya",
+  "18": "Assam",
+  "19": "West Bengal",
+  "20": "Jharkhand",
+  "21": "Odisha",
+  "22": "Chhattisgarh",
+  "23": "Madhya Pradesh",
+  "24": "Gujarat",
+  "25": "Daman & Diu",
+  "26": "Dadra & Nagar Haveli",
+  "27": "Maharashtra",
+  "28": "Andhra Pradesh (Old)",
+  "29": "Karnataka",
+  "30": "Goa",
+  "31": "Lakshadweep",
+  "32": "Kerala",
+  "33": "Tamil Nadu",
+  "34": "Puducherry",
+  "35": "Andaman & Nicobar",
+  "36": "Telangana",
+  "37": "Andhra Pradesh",
+  "38": "Ladakh",
 };
 
 export const STATE_NAME_TO_CODE: Record<string, string> = Object.fromEntries(
-  Object.entries(INDIAN_STATES).map(([code, name]) => [name.toLowerCase(), code])
+  Object.entries(INDIAN_STATES).map(([code, name]) => [
+    name.toLowerCase(),
+    code,
+  ]),
 );
