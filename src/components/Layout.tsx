@@ -123,6 +123,22 @@ export function Layout() {
         </div>
       </main>
 
+      {/* Footer */}
+      <footer className="border-t border-surface-200 bg-surface-50 py-6 mt-auto">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-surface-500">
+          <div>
+            &copy; {new Date().getFullYear()} SouravBarui. All rights reserved.
+          </div>
+          <div className="flex items-center gap-6">
+            <a href="https://github.com/elsesourav" target="_blank" rel="noreferrer" className="hover:text-brand-600 transition-colors">GitHub</a>
+            <a href="https://instagram.com/elsesourav" target="_blank" rel="noreferrer" className="hover:text-brand-600 transition-colors">Instagram</a>
+            <a href="https://facebook.com/elsesourav" target="_blank" rel="noreferrer" className="hover:text-brand-600 transition-colors">Facebook</a>
+            <a href="https://x.com/elsesourav" target="_blank" rel="noreferrer" className="hover:text-brand-600 transition-colors">X</a>
+            <a href="mailto:elsesourav@gmail.com" className="hover:text-brand-600 transition-colors">elsesourav@gmail.com</a>
+          </div>
+        </div>
+      </footer>
+
       {/* Settings Modal */}
       <Modal
         isOpen={showSettings}
